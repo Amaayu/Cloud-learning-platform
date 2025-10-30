@@ -38,9 +38,6 @@ export async function GET(request: NextRequest) {
       name: user.name,
       email: user.email,
       role: user.role,
-      bookmarks: user.bookmarks,
-      progress: user.progress,
-      theme: user.theme,
     })
   } catch (error) {
     console.error('Auth me error:', error)
