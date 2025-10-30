@@ -8,7 +8,7 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CSE Learning Platform - B.Tech Computer Science",
+  title: "CSE Learning Platform",
   description: "Comprehensive learning platform for B.Tech CSE students covering DSA, DBMS, OS, CN, Web Development, and AI/ML",
 };
 

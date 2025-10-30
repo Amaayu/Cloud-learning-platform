@@ -183,123 +183,98 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-// Mock data - in real app, this would come from API
-const unitData = {
-    'arrays-strings': {
-        title: 'Arrays and Strings',
-        description: 'Learn about arrays, strings, and basic operations. Master the fundamental data structures that form the building blocks of more complex algorithms.',
-        estimatedHours: 10,
-        totalTopics: 8,
-        topics: [
-            {
-                _id: 'array-basics',
-                title: 'Array Basics',
-                description: 'Introduction to arrays, memory layout, and basic operations',
-                estimatedTime: '45 min',
-                difficulty: 'Beginner',
-                order: 1
-            },
-            {
-                _id: 'array-operations',
-                title: 'Array Operations',
-                description: 'Insertion, deletion, searching, and traversal operations',
-                estimatedTime: '60 min',
-                difficulty: 'Beginner',
-                order: 2
-            },
-            {
-                _id: 'string-basics',
-                title: 'String Fundamentals',
-                description: 'String representation, operations, and common algorithms',
-                estimatedTime: '50 min',
-                difficulty: 'Beginner',
-                order: 3
-            },
-            {
-                _id: 'string-algorithms',
-                title: 'String Algorithms',
-                description: 'Pattern matching, string manipulation, and advanced techniques',
-                estimatedTime: '75 min',
-                difficulty: 'Intermediate',
-                order: 4
-            },
-            {
-                _id: 'two-pointers',
-                title: 'Two Pointers Technique',
-                description: 'Efficient array and string processing using two pointers',
-                estimatedTime: '65 min',
-                difficulty: 'Intermediate',
-                order: 5
-            },
-            {
-                _id: 'sliding-window',
-                title: 'Sliding Window',
-                description: 'Optimize subarray problems with sliding window technique',
-                estimatedTime: '70 min',
-                difficulty: 'Intermediate',
-                order: 6
-            },
-            {
-                _id: 'array-problems',
-                title: 'Common Array Problems',
-                description: 'Practice with frequently asked array interview questions',
-                estimatedTime: '90 min',
-                difficulty: 'Advanced',
-                order: 7
-            },
-            {
-                _id: 'string-problems',
-                title: 'String Problem Solving',
-                description: 'Advanced string manipulation and algorithm problems',
-                estimatedTime: '85 min',
-                difficulty: 'Advanced',
-                order: 8
-            }
-        ]
-    }
-};
 function UnitPage() {
     _s();
     const params = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"])();
     const { subjectId, unitId } = params;
     const [unit, setUnit] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [completedTopics, setCompletedTopics] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [unitProgress, setUnitProgress] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "UnitPage.useEffect": ()=>{
-            // In real app, fetch from API
-            const unitInfo = unitData[unitId];
-            if (unitInfo) {
-                setUnit(unitInfo);
-            }
+            const fetchUnit = {
+                "UnitPage.useEffect.fetchUnit": async ()=>{
+                    try {
+                        setLoading(true);
+                        const response = await fetch(`/api/units/${unitId}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            setUnit(data);
+                        } else {
+                            console.error('Failed to fetch unit');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching unit:', error);
+                    } finally{
+                        setLoading(false);
+                    }
+                }
+            }["UnitPage.useEffect.fetchUnit"];
             // Fetch user progress
             const fetchProgress = {
                 "UnitPage.useEffect.fetchProgress": async ()=>{
                     const token = localStorage.getItem('token');
                     if (token) {
                         try {
-                            const response = await fetch(`/api/units/${unitId}/progress`, {
+                            const response_0 = await fetch(`/api/units/${unitId}/progress`, {
                                 headers: {
                                     'Authorization': `Bearer ${token}`
                                 }
                             });
-                            if (response.ok) {
-                                const data = await response.json();
-                                setCompletedTopics(data.completedTopics || []);
-                                setUnitProgress(data.progressPercentage || 0);
+                            if (response_0.ok) {
+                                const data_0 = await response_0.json();
+                                setCompletedTopics(data_0.completedTopics || []);
+                                setUnitProgress(data_0.progressPercentage || 0);
                             }
-                        } catch (error) {
-                            console.error('Error fetching progress:', error);
+                        } catch (error_0) {
+                            console.error('Error fetching progress:', error_0);
                         }
                     }
                 }
             }["UnitPage.useEffect.fetchProgress"];
-            fetchProgress();
+            if (unitId) {
+                fetchUnit();
+                fetchProgress();
+            }
         }
     }["UnitPage.useEffect"], [
         subjectId,
         unitId
     ]);
+    if (loading) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "container mx-auto px-4 py-8",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "text-center",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
+                        lineNumber: 85,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        className: "mt-4 text-muted-foreground",
+                        children: "Loading unit..."
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
+                        lineNumber: 86,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
+                lineNumber: 84,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
+            lineNumber: 83,
+            columnNumber: 12
+        }, this);
+    }
     if (!unit) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "container mx-auto px-4 py-8",
@@ -311,7 +286,7 @@ function UnitPage() {
                         children: "Unit not found"
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                        lineNumber: 119,
+                        lineNumber: 93,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -320,23 +295,23 @@ function UnitPage() {
                             children: "← Back to Subject"
                         }, void 0, false, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                            lineNumber: 121,
+                            lineNumber: 95,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                        lineNumber: 120,
+                        lineNumber: 94,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                lineNumber: 118,
+                lineNumber: 92,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-            lineNumber: 117,
+            lineNumber: 91,
             columnNumber: 12
         }, this);
     }
@@ -378,24 +353,24 @@ function UnitPage() {
                                 className: "h-4 w-4 mr-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                lineNumber: 151,
+                                lineNumber: 125,
                                 columnNumber: 13
                             }, this),
                             "Back to Subject"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                        lineNumber: 150,
+                        lineNumber: 124,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                    lineNumber: 149,
+                    lineNumber: 123,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                lineNumber: 140,
+                lineNumber: 114,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -419,7 +394,7 @@ function UnitPage() {
                             children: unit.title
                         }, void 0, false, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                            lineNumber: 168,
+                            lineNumber: 142,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -427,7 +402,7 @@ function UnitPage() {
                             children: unit.description
                         }, void 0, false, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                            lineNumber: 169,
+                            lineNumber: 143,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -438,10 +413,10 @@ function UnitPage() {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "text-2xl font-bold text-primary",
-                                            children: unit.topics.length
+                                            children: unit.topics?.length || 0
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 175,
+                                            lineNumber: 149,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -449,13 +424,13 @@ function UnitPage() {
                                             children: "Topics"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 176,
+                                            lineNumber: 150,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 174,
+                                    lineNumber: 148,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -466,7 +441,7 @@ function UnitPage() {
                                             children: completedTopics.length
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 179,
+                                            lineNumber: 153,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -474,13 +449,13 @@ function UnitPage() {
                                             children: "Completed"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 180,
+                                            lineNumber: 154,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 178,
+                                    lineNumber: 152,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -488,13 +463,10 @@ function UnitPage() {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "text-2xl font-bold text-primary",
-                                            children: [
-                                                unit.estimatedHours,
-                                                "h"
-                                            ]
-                                        }, void 0, true, {
+                                            children: "8h"
+                                        }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 183,
+                                            lineNumber: 157,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -502,13 +474,13 @@ function UnitPage() {
                                             children: "Duration"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 184,
+                                            lineNumber: 158,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 182,
+                                    lineNumber: 156,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -522,7 +494,7 @@ function UnitPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 187,
+                                            lineNumber: 161,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -530,19 +502,19 @@ function UnitPage() {
                                             children: "Progress"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 188,
+                                            lineNumber: 162,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 186,
+                                    lineNumber: 160,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                            lineNumber: 173,
+                            lineNumber: 147,
                             columnNumber: 11
                         }, this),
                         unitProgress > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -555,7 +527,7 @@ function UnitPage() {
                                             children: "Unit Progress"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 194,
+                                            lineNumber: 168,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -565,13 +537,13 @@ function UnitPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 195,
+                                            lineNumber: 169,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 193,
+                                    lineNumber: 167,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$progress$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Progress"], {
@@ -579,24 +551,24 @@ function UnitPage() {
                                     className: "h-3"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 197,
+                                    lineNumber: 171,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                            lineNumber: 192,
+                            lineNumber: 166,
                             columnNumber: 32
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                    lineNumber: 167,
+                    lineNumber: 141,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                lineNumber: 158,
+                lineNumber: 132,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -619,7 +591,7 @@ function UnitPage() {
                                 children: "Topics"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                lineNumber: 212,
+                                lineNumber: 186,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -631,30 +603,30 @@ function UnitPage() {
                                             className: "h-4 w-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 215,
+                                            lineNumber: 189,
                                             columnNumber: 15
                                         }, this),
                                         "Take Unit Quiz"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 214,
+                                    lineNumber: 188,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                lineNumber: 213,
+                                lineNumber: 187,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                        lineNumber: 211,
+                        lineNumber: 185,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "space-y-4",
-                        children: unit.topics.map((topic, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
+                        children: unit.topics?.map((topic, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
                                 initial: {
                                     opacity: 0,
                                     y: 20
@@ -690,7 +662,7 @@ function UnitPage() {
                                                                 children: topic.order
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                lineNumber: 241,
+                                                                lineNumber: 215,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -704,21 +676,21 @@ function UnitPage() {
                                                                                 children: topic.title
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                                lineNumber: 247,
+                                                                                lineNumber: 221,
                                                                                 columnNumber: 29
                                                                             }, this),
-                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                            topic.difficulty && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                 className: `px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(topic.difficulty)}`,
                                                                                 children: topic.difficulty
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                                lineNumber: 248,
-                                                                                columnNumber: 29
+                                                                                lineNumber: 222,
+                                                                                columnNumber: 50
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 246,
+                                                                        lineNumber: 220,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -726,7 +698,7 @@ function UnitPage() {
                                                                         children: topic.description
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 252,
+                                                                        lineNumber: 226,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -738,37 +710,37 @@ function UnitPage() {
                                                                                     className: "h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                                    lineNumber: 257,
+                                                                                    lineNumber: 231,
                                                                                     columnNumber: 31
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                                    children: topic.estimatedTime
+                                                                                    children: topic.estimatedTime || '30 min'
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                                    lineNumber: 258,
+                                                                                    lineNumber: 232,
                                                                                     columnNumber: 31
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                            lineNumber: 256,
+                                                                            lineNumber: 230,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 255,
+                                                                        lineNumber: 229,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                lineNumber: 245,
+                                                                lineNumber: 219,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 240,
+                                                        lineNumber: 214,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -781,7 +753,7 @@ function UnitPage() {
                                                                         className: "h-5 w-5"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 266,
+                                                                        lineNumber: 240,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -789,13 +761,13 @@ function UnitPage() {
                                                                         children: "Completed"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 267,
+                                                                        lineNumber: 241,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                lineNumber: 265,
+                                                                lineNumber: 239,
                                                                 columnNumber: 64
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "flex items-center space-x-2 text-muted-foreground",
@@ -804,7 +776,7 @@ function UnitPage() {
                                                                         className: "h-5 w-5"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 269,
+                                                                        lineNumber: 243,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -812,13 +784,13 @@ function UnitPage() {
                                                                         children: "Not started"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 270,
+                                                                        lineNumber: 244,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                lineNumber: 268,
+                                                                lineNumber: 242,
                                                                 columnNumber: 36
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -829,57 +801,57 @@ function UnitPage() {
                                                                         className: "h-4 w-4 mr-2"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                        lineNumber: 274,
+                                                                        lineNumber: 248,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     completedTopics.includes(topic._id) ? 'Review' : 'Start'
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                                lineNumber: 273,
+                                                                lineNumber: 247,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 264,
+                                                        lineNumber: 238,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                lineNumber: 239,
+                                                lineNumber: 213,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                            lineNumber: 238,
+                                            lineNumber: 212,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                        lineNumber: 237,
+                                        lineNumber: 211,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 236,
+                                    lineNumber: 210,
                                     columnNumber: 15
                                 }, this)
                             }, topic._id, false, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                lineNumber: 222,
-                                columnNumber: 46
+                                lineNumber: 196,
+                                columnNumber: 47
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                        lineNumber: 221,
+                        lineNumber: 195,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                lineNumber: 203,
+                lineNumber: 177,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -904,20 +876,20 @@ function UnitPage() {
                                     children: "Unit Summary"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 299,
+                                    lineNumber: 273,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                     children: "What you'll learn in this unit"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                    lineNumber: 300,
+                                    lineNumber: 274,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                            lineNumber: 298,
+                            lineNumber: 272,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -931,7 +903,7 @@ function UnitPage() {
                                                 children: "Key Concepts"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                lineNumber: 307,
+                                                lineNumber: 281,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -941,40 +913,40 @@ function UnitPage() {
                                                         children: "• Array data structure and memory layout"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 309,
+                                                        lineNumber: 283,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                         children: "• String manipulation and algorithms"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 310,
+                                                        lineNumber: 284,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                         children: "• Two pointers and sliding window techniques"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 311,
+                                                        lineNumber: 285,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                         children: "• Common problem-solving patterns"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 312,
+                                                        lineNumber: 286,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                lineNumber: 308,
+                                                lineNumber: 282,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                        lineNumber: 306,
+                                        lineNumber: 280,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -984,7 +956,7 @@ function UnitPage() {
                                                 children: "Skills You'll Gain"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                lineNumber: 316,
+                                                lineNumber: 290,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -994,72 +966,72 @@ function UnitPage() {
                                                         children: "• Efficient array and string processing"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 318,
+                                                        lineNumber: 292,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                         children: "• Algorithm optimization techniques"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 319,
+                                                        lineNumber: 293,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                         children: "• Problem-solving with multiple approaches"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 320,
+                                                        lineNumber: 294,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                         children: "• Interview preparation for array problems"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                        lineNumber: 321,
+                                                        lineNumber: 295,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                                lineNumber: 317,
+                                                lineNumber: 291,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                        lineNumber: 315,
+                                        lineNumber: 289,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                                lineNumber: 305,
+                                lineNumber: 279,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                            lineNumber: 304,
+                            lineNumber: 278,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                    lineNumber: 297,
+                    lineNumber: 271,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-                lineNumber: 287,
+                lineNumber: 261,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/page.tsx",
-        lineNumber: 138,
+        lineNumber: 112,
         columnNumber: 10
     }, this);
 }
-_s(UnitPage, "/DEky0UwHGaQ/P/j8ZKMcNu3r/s=", false, function() {
+_s(UnitPage, "BcgyZWX7A501TWN1WYHq4LCYChk=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"]
     ];

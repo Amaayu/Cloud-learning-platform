@@ -9,94 +9,50 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 
-// Mock data - in real app, this would come from API
-const unitData = {
-  'arrays-strings': {
-    title: 'Arrays and Strings',
-    description: 'Learn about arrays, strings, and basic operations. Master the fundamental data structures that form the building blocks of more complex algorithms.',
-    estimatedHours: 10,
-    totalTopics: 8,
-    topics: [
-      {
-        _id: 'array-basics',
-        title: 'Array Basics',
-        description: 'Introduction to arrays, memory layout, and basic operations',
-        estimatedTime: '45 min',
-        difficulty: 'Beginner',
-        order: 1,
-      },
-      {
-        _id: 'array-operations',
-        title: 'Array Operations',
-        description: 'Insertion, deletion, searching, and traversal operations',
-        estimatedTime: '60 min',
-        difficulty: 'Beginner',
-        order: 2,
-      },
-      {
-        _id: 'string-basics',
-        title: 'String Fundamentals',
-        description: 'String representation, operations, and common algorithms',
-        estimatedTime: '50 min',
-        difficulty: 'Beginner',
-        order: 3,
-      },
-      {
-        _id: 'string-algorithms',
-        title: 'String Algorithms',
-        description: 'Pattern matching, string manipulation, and advanced techniques',
-        estimatedTime: '75 min',
-        difficulty: 'Intermediate',
-        order: 4,
-      },
-      {
-        _id: 'two-pointers',
-        title: 'Two Pointers Technique',
-        description: 'Efficient array and string processing using two pointers',
-        estimatedTime: '65 min',
-        difficulty: 'Intermediate',
-        order: 5,
-      },
-      {
-        _id: 'sliding-window',
-        title: 'Sliding Window',
-        description: 'Optimize subarray problems with sliding window technique',
-        estimatedTime: '70 min',
-        difficulty: 'Intermediate',
-        order: 6,
-      },
-      {
-        _id: 'array-problems',
-        title: 'Common Array Problems',
-        description: 'Practice with frequently asked array interview questions',
-        estimatedTime: '90 min',
-        difficulty: 'Advanced',
-        order: 7,
-      },
-      {
-        _id: 'string-problems',
-        title: 'String Problem Solving',
-        description: 'Advanced string manipulation and algorithm problems',
-        estimatedTime: '85 min',
-        difficulty: 'Advanced',
-        order: 8,
-      },
-    ],
-  },
+interface Topic {
+  _id: string
+  title: string
+  description: string
+  estimatedTime?: string
+  difficulty?: string
+  order: number
+}
+
+interface Unit {
+  _id: string
+  title: string
+  description: string
+  topics: Topic[]
+  subject?: {
+    _id: string
+    title: string
+  }
 }
 
 export default function UnitPage() {
   const params = useParams()
   const { subjectId, unitId } = params
-  const [unit, setUnit] = useState(null)
+  const [unit, setUnit] = useState<Unit | null>(null)
+  const [loading, setLoading] = useState(true)
   const [completedTopics, setCompletedTopics] = useState<string[]>([])
   const [unitProgress, setUnitProgress] = useState(0)
 
   useEffect(() => {
-    // In real app, fetch from API
-    const unitInfo = unitData[unitId as string]
-    if (unitInfo) {
-      setUnit(unitInfo)
+    const fetchUnit = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/units/${unitId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setUnit(data)
+        } else {
+          console.error('Failed to fetch unit')
+        }
+      } catch (error) {
+        console.error('Error fetching unit:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     // Fetch user progress
@@ -120,8 +76,22 @@ export default function UnitPage() {
       }
     }
 
-    fetchProgress()
+    if (unitId) {
+      fetchUnit()
+      fetchProgress()
+    }
   }, [subjectId, unitId])
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading unit...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!unit) {
     return (
@@ -181,7 +151,7 @@ export default function UnitPage() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{unit.topics.length}</div>
+              <div className="text-2xl font-bold text-primary">{unit.topics?.length || 0}</div>
               <div className="text-sm text-muted-foreground">Topics</div>
             </div>
             <div className="text-center">
@@ -189,7 +159,7 @@ export default function UnitPage() {
               <div className="text-sm text-muted-foreground">Completed</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{unit.estimatedHours}h</div>
+              <div className="text-2xl font-bold text-primary">8h</div>
               <div className="text-sm text-muted-foreground">Duration</div>
             </div>
             <div className="text-center">
@@ -227,7 +197,7 @@ export default function UnitPage() {
         </div>
 
         <div className="space-y-4">
-          {unit.topics.map((topic, index) => (
+          {unit.topics?.map((topic, index) => (
             <motion.div
               key={topic._id}
               initial={{ opacity: 0, y: 20 }}
@@ -248,9 +218,11 @@ export default function UnitPage() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
                             <h3 className="text-lg font-semibold">{topic.title}</h3>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(topic.difficulty)}`}>
-                              {topic.difficulty}
-                            </span>
+                            {topic.difficulty && (
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(topic.difficulty)}`}>
+                                {topic.difficulty}
+                              </span>
+                            )}
                           </div>
                           <p className="text-muted-foreground mb-3">
                             {topic.description}
@@ -258,7 +230,7 @@ export default function UnitPage() {
                           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                             <div className="flex items-center space-x-1">
                               <Clock className="h-4 w-4" />
-                              <span>{topic.estimatedTime}</span>
+                              <span>{topic.estimatedTime || '30 min'}</span>
                             </div>
                           </div>
                         </div>

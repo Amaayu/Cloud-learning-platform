@@ -348,140 +348,6 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-// Mock data - in real app, this would come from API
-const topicData = {
-    'arrays-strings': {
-        'array-basics': {
-            title: 'Array Basics',
-            content: `
-# Array Basics
-
-Arrays are one of the most fundamental data structures in computer science. An array is a collection of elements stored at contiguous memory locations. The idea is to store multiple items of the same type together.
-
-## Key Characteristics
-
-- **Fixed Size**: Arrays have a fixed size that is determined at the time of creation
-- **Homogeneous Elements**: All elements in an array are of the same data type
-- **Random Access**: Elements can be accessed directly using their index
-- **Zero-based Indexing**: Most programming languages use 0-based indexing
-
-## Memory Layout
-
-Arrays store elements in contiguous memory locations, which allows for efficient access patterns and cache performance.
-
-## Time Complexity
-
-- **Access**: O(1) - Direct access using index
-- **Search**: O(n) - Linear search through elements
-- **Insertion**: O(n) - May require shifting elements
-- **Deletion**: O(n) - May require shifting elements
-
-## Common Operations
-
-1. **Traversal**: Visiting each element of the array
-2. **Insertion**: Adding an element at a specific position
-3. **Deletion**: Removing an element from a specific position
-4. **Search**: Finding an element in the array
-5. **Update**: Modifying an element at a specific position
-      `,
-            examples: [
-                {
-                    title: 'Array Declaration and Initialization',
-                    description: 'Different ways to declare and initialize arrays in various programming languages.',
-                    code: `// JavaScript
-let numbers = [1, 2, 3, 4, 5];
-let fruits = new Array("apple", "banana", "orange");
-
-// Java
-int[] numbers = {1, 2, 3, 4, 5};
-String[] fruits = new String[3];
-fruits[0] = "apple";
-fruits[1] = "banana";
-fruits[2] = "orange";
-
-// Python
-numbers = [1, 2, 3, 4, 5]
-fruits = ["apple", "banana", "orange"]
-
-// C++
-#include <array>
-std::array<int, 5> numbers = {1, 2, 3, 4, 5};
-std::string fruits[3] = {"apple", "banana", "orange"};`,
-                    language: 'javascript'
-                },
-                {
-                    title: 'Array Traversal',
-                    description: 'Different methods to iterate through array elements.',
-                    code: `// Using for loop
-function printArray(arr) {
-    for (let i = 0; i < arr.length; i++) {
-        console.log(arr[i]);
-    }
-}
-
-// Using for...of loop
-function printArrayForOf(arr) {
-    for (let element of arr) {
-        console.log(element);
-    }
-}
-
-// Using forEach method
-function printArrayForEach(arr) {
-    arr.forEach((element, index) => {
-        console.log(\`Index \${index}: \${element}\`);
-    });
-}
-
-// Example usage
-let numbers = [10, 20, 30, 40, 50];
-printArray(numbers);`,
-                    language: 'javascript'
-                },
-                {
-                    title: 'Array Search Operations',
-                    description: 'Linear search implementation to find elements in an array.',
-                    code: `// Linear Search
-function linearSearch(arr, target) {
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === target) {
-            return i; // Return index if found
-        }
-    }
-    return -1; // Return -1 if not found
-}
-
-// Binary Search (for sorted arrays)
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-    
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-        
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-    
-    return -1;
-}
-
-// Example usage
-let numbers = [1, 3, 5, 7, 9, 11, 13];
-console.log(linearSearch(numbers, 7)); // Output: 3
-console.log(binarySearch(numbers, 7)); // Output: 3`,
-                    language: 'javascript'
-                }
-            ],
-            order: 1
-        }
-    }
-};
 function TopicPage() {
     _s();
     const params = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"])();
@@ -489,37 +355,54 @@ function TopicPage() {
     const [topic, setTopic] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [isBookmarked, setIsBookmarked] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [isCompleted, setIsCompleted] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [actionLoading, setActionLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "TopicPage.useEffect": ()=>{
-            // In real app, fetch from API
-            const topicInfo = topicData[unitId]?.[topicId];
-            if (topicInfo) {
-                setTopic(topicInfo);
-            }
+            const fetchTopic = {
+                "TopicPage.useEffect.fetchTopic": async ()=>{
+                    try {
+                        setLoading(true);
+                        const response = await fetch(`/api/topics/${topicId}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            setTopic(data);
+                        } else {
+                            console.error('Failed to fetch topic');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching topic:', error);
+                    } finally{
+                        setLoading(false);
+                    }
+                }
+            }["TopicPage.useEffect.fetchTopic"];
             // Check if topic is bookmarked and completed
             const checkStatus = {
                 "TopicPage.useEffect.checkStatus": async ()=>{
                     const token = localStorage.getItem('token');
                     if (token) {
                         try {
-                            const response = await fetch(`/api/topics/${topicId}/status`, {
+                            const response_0 = await fetch(`/api/topics/${topicId}/status`, {
                                 headers: {
                                     'Authorization': `Bearer ${token}`
                                 }
                             });
-                            if (response.ok) {
-                                const data = await response.json();
-                                setIsBookmarked(data.isBookmarked);
-                                setIsCompleted(data.isCompleted);
+                            if (response_0.ok) {
+                                const data_0 = await response_0.json();
+                                setIsBookmarked(data_0.isBookmarked);
+                                setIsCompleted(data_0.isCompleted);
                             }
-                        } catch (error) {
-                            console.error('Error fetching topic status:', error);
+                        } catch (error_0) {
+                            console.error('Error fetching topic status:', error_0);
                         }
                     }
                 }
             }["TopicPage.useEffect.checkStatus"];
-            checkStatus();
+            if (topicId) {
+                fetchTopic();
+                checkStatus();
+            }
         }
     }["TopicPage.useEffect"], [
         subjectId,
@@ -532,9 +415,9 @@ function TopicPage() {
             alert('Please login to bookmark topics');
             return;
         }
-        setLoading(true);
+        setActionLoading(true);
         try {
-            const response_0 = await fetch(`/api/topics/${topicId}/bookmark`, {
+            const response_1 = await fetch(`/api/topics/${topicId}/bookmark`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token_0}`,
@@ -544,13 +427,13 @@ function TopicPage() {
                     action: isBookmarked ? 'remove' : 'add'
                 })
             });
-            if (response_0.ok) {
+            if (response_1.ok) {
                 setIsBookmarked(!isBookmarked);
             }
-        } catch (error_0) {
-            console.error('Error toggling bookmark:', error_0);
+        } catch (error_1) {
+            console.error('Error toggling bookmark:', error_1);
         } finally{
-            setLoading(false);
+            setActionLoading(false);
         }
     };
     const handleMarkComplete = async ()=>{
@@ -559,9 +442,9 @@ function TopicPage() {
             alert('Please login to track progress');
             return;
         }
-        setLoading(true);
+        setActionLoading(true);
         try {
-            const response_1 = await fetch(`/api/topics/${topicId}/complete`, {
+            const response_2 = await fetch(`/api/topics/${topicId}/complete`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token_1}`,
@@ -573,15 +456,48 @@ function TopicPage() {
                     completed: !isCompleted
                 })
             });
-            if (response_1.ok) {
+            if (response_2.ok) {
                 setIsCompleted(!isCompleted);
             }
-        } catch (error_1) {
-            console.error('Error updating completion status:', error_1);
+        } catch (error_2) {
+            console.error('Error updating completion status:', error_2);
         } finally{
-            setLoading(false);
+            setActionLoading(false);
         }
     };
+    if (loading) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "container mx-auto px-4 py-8",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "text-center",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
+                        lineNumber: 147,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        className: "mt-4 text-muted-foreground",
+                        children: "Loading topic..."
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
+                        lineNumber: 148,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
+                lineNumber: 146,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
+            lineNumber: 145,
+            columnNumber: 12
+        }, this);
+    }
     if (!topic) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "container mx-auto px-4 py-8",
@@ -593,7 +509,7 @@ function TopicPage() {
                         children: "Topic not found"
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 241,
+                        lineNumber: 155,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -602,23 +518,23 @@ function TopicPage() {
                             children: "← Back to Subject"
                         }, void 0, false, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                            lineNumber: 243,
+                            lineNumber: 157,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 242,
+                        lineNumber: 156,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                lineNumber: 240,
+                lineNumber: 154,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-            lineNumber: 239,
+            lineNumber: 153,
             columnNumber: 12
         }, this);
     }
@@ -648,24 +564,24 @@ function TopicPage() {
                                 className: "h-4 w-4 mr-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                lineNumber: 261,
+                                lineNumber: 175,
                                 columnNumber: 13
                             }, this),
                             "Back to Unit"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 260,
+                        lineNumber: 174,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                    lineNumber: 259,
+                    lineNumber: 173,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                lineNumber: 250,
+                lineNumber: 164,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -689,7 +605,7 @@ function TopicPage() {
                             children: topic.title
                         }, void 0, false, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                            lineNumber: 278,
+                            lineNumber: 192,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -699,69 +615,69 @@ function TopicPage() {
                                     variant: "outline",
                                     size: "sm",
                                     onClick: handleBookmark,
-                                    disabled: loading,
+                                    disabled: actionLoading,
                                     children: [
                                         isBookmarked ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$bookmark$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__BookmarkCheck$3e$__["BookmarkCheck"], {
                                             className: "h-4 w-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                            lineNumber: 281,
+                                            lineNumber: 195,
                                             columnNumber: 31
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$bookmark$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Bookmark$3e$__["Bookmark"], {
                                             className: "h-4 w-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                            lineNumber: 281,
+                                            lineNumber: 195,
                                             columnNumber: 76
                                         }, this),
                                         isBookmarked ? 'Bookmarked' : 'Bookmark'
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                    lineNumber: 280,
+                                    lineNumber: 194,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                     variant: isCompleted ? "default" : "outline",
                                     size: "sm",
                                     onClick: handleMarkComplete,
-                                    disabled: loading,
+                                    disabled: actionLoading,
                                     children: [
                                         isCompleted ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2d$big$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle$3e$__["CheckCircle"], {
                                             className: "h-4 w-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                            lineNumber: 285,
+                                            lineNumber: 199,
                                             columnNumber: 30
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Circle$3e$__["Circle"], {
                                             className: "h-4 w-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                            lineNumber: 285,
+                                            lineNumber: 199,
                                             columnNumber: 73
                                         }, this),
                                         isCompleted ? 'Completed' : 'Mark Complete'
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                    lineNumber: 284,
+                                    lineNumber: 198,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                            lineNumber: 279,
+                            lineNumber: 193,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                    lineNumber: 277,
+                    lineNumber: 191,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                lineNumber: 268,
+                lineNumber: 182,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -784,29 +700,26 @@ function TopicPage() {
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "prose prose-lg dark:prose-invert max-w-none",
                             dangerouslySetInnerHTML: {
-                                __html: topic.content.replace(/\n/g, '<br>').replace(/#{1,6} /g, (match)=>{
-                                    const level = match.length - 1;
-                                    return `<h${level} class="text-${4 - level}xl font-bold mt-6 mb-4">`;
-                                }).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                __html: topic.content.replace(/\n/g, '<br>').replace(/#{6}\s+(.*)/g, '<h6 class="text-sm font-bold mt-4 mb-2">$1</h6>').replace(/#{5}\s+(.*)/g, '<h5 class="text-base font-bold mt-4 mb-2">$1</h5>').replace(/#{4}\s+(.*)/g, '<h4 class="text-lg font-bold mt-4 mb-3">$1</h4>').replace(/#{3}\s+(.*)/g, '<h3 class="text-xl font-bold mt-6 mb-3">$1</h3>').replace(/#{2}\s+(.*)/g, '<h2 class="text-2xl font-bold mt-6 mb-4">$1</h2>').replace(/#{1}\s+(.*)/g, '<h1 class="text-3xl font-bold mt-8 mb-4">$1</h1>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')
                             }
                         }, void 0, false, {
                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                            lineNumber: 305,
+                            lineNumber: 219,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 304,
+                        lineNumber: 218,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                    lineNumber: 303,
+                    lineNumber: 217,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                lineNumber: 293,
+                lineNumber: 207,
                 columnNumber: 7
             }, this),
             topic.examples && topic.examples.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -829,7 +742,7 @@ function TopicPage() {
                         children: "Code Examples"
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 326,
+                        lineNumber: 237,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -843,20 +756,20 @@ function TopicPage() {
                                                 children: example.title
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                                lineNumber: 330,
+                                                lineNumber: 241,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                 children: example.description
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                                lineNumber: 331,
+                                                lineNumber: 242,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                        lineNumber: 329,
+                                        lineNumber: 240,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -866,29 +779,29 @@ function TopicPage() {
                                             title: example.title
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                            lineNumber: 334,
+                                            lineNumber: 245,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                        lineNumber: 333,
+                                        lineNumber: 244,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, index, true, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                lineNumber: 328,
+                                lineNumber: 239,
                                 columnNumber: 53
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 327,
+                        lineNumber: 238,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                lineNumber: 316,
+                lineNumber: 227,
                 columnNumber: 55
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -913,14 +826,14 @@ function TopicPage() {
                                 className: "h-4 w-4 mr-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                lineNumber: 352,
+                                lineNumber: 263,
                                 columnNumber: 11
                             }, this),
                             "Previous Topic"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 351,
+                        lineNumber: 262,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -930,29 +843,29 @@ function TopicPage() {
                                 className: "h-4 w-4 ml-2"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                                lineNumber: 357,
+                                lineNumber: 268,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                        lineNumber: 355,
+                        lineNumber: 266,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-                lineNumber: 341,
+                lineNumber: 252,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/subjects/[subjectId]/[unitId]/[topicId]/page.tsx",
-        lineNumber: 248,
+        lineNumber: 162,
         columnNumber: 10
     }, this);
 }
-_s(TopicPage, "86YeM+bWC53FL11yihctJ+V1wm8=", false, function() {
+_s(TopicPage, "8IpSGiYsO5DNzN9lOpCY4D2RrtE=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"]
     ];

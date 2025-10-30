@@ -10,6 +10,14 @@ export async function GET(
     await dbConnect()
     const { unitId } = await params
 
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(unitId)) {
+      return NextResponse.json(
+        { message: 'Invalid unit ID format' },
+        { status: 400 }
+      )
+    }
+
     // Get unit
     const unit = await mongoose.connection.db
       .collection('units')

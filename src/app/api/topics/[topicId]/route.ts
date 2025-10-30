@@ -10,6 +10,14 @@ export async function GET(
     await dbConnect()
     const { topicId } = await params
 
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(topicId)) {
+      return NextResponse.json(
+        { message: 'Invalid topic ID format' },
+        { status: 400 }
+      )
+    }
+
     // Get topic
     const topic = await mongoose.connection.db
       .collection('topics')

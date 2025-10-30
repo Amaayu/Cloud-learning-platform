@@ -16,7 +16,7 @@
   "/api/units/[unitId]/route": "/api/units/[unitId]",
   "/auth/login/page": "/auth/login",
   "/auth/signup/page": "/auth/signup",
-  "/favicon.ico/route": "/favicon.ico",
+  "/icon.svg/route": "/icon.svg",
   "/page": "/",
   "/profile/page": "/profile",
   "/setup/page": "/setup",

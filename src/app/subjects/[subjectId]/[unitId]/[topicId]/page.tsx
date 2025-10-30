@@ -9,154 +9,55 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import CodeBlock from '@/components/code-block'
 
-// Mock data - in real app, this would come from API
-const topicData = {
-  'arrays-strings': {
-    'array-basics': {
-      title: 'Array Basics',
-      content: `
-# Array Basics
-
-Arrays are one of the most fundamental data structures in computer science. An array is a collection of elements stored at contiguous memory locations. The idea is to store multiple items of the same type together.
-
-## Key Characteristics
-
-- **Fixed Size**: Arrays have a fixed size that is determined at the time of creation
-- **Homogeneous Elements**: All elements in an array are of the same data type
-- **Random Access**: Elements can be accessed directly using their index
-- **Zero-based Indexing**: Most programming languages use 0-based indexing
-
-## Memory Layout
-
-Arrays store elements in contiguous memory locations, which allows for efficient access patterns and cache performance.
-
-## Time Complexity
-
-- **Access**: O(1) - Direct access using index
-- **Search**: O(n) - Linear search through elements
-- **Insertion**: O(n) - May require shifting elements
-- **Deletion**: O(n) - May require shifting elements
-
-## Common Operations
-
-1. **Traversal**: Visiting each element of the array
-2. **Insertion**: Adding an element at a specific position
-3. **Deletion**: Removing an element from a specific position
-4. **Search**: Finding an element in the array
-5. **Update**: Modifying an element at a specific position
-      `,
-      examples: [
-        {
-          title: 'Array Declaration and Initialization',
-          description: 'Different ways to declare and initialize arrays in various programming languages.',
-          code: `// JavaScript
-let numbers = [1, 2, 3, 4, 5];
-let fruits = new Array("apple", "banana", "orange");
-
-// Java
-int[] numbers = {1, 2, 3, 4, 5};
-String[] fruits = new String[3];
-fruits[0] = "apple";
-fruits[1] = "banana";
-fruits[2] = "orange";
-
-// Python
-numbers = [1, 2, 3, 4, 5]
-fruits = ["apple", "banana", "orange"]
-
-// C++
-#include <array>
-std::array<int, 5> numbers = {1, 2, 3, 4, 5};
-std::string fruits[3] = {"apple", "banana", "orange"};`,
-          language: 'javascript'
-        },
-        {
-          title: 'Array Traversal',
-          description: 'Different methods to iterate through array elements.',
-          code: `// Using for loop
-function printArray(arr) {
-    for (let i = 0; i < arr.length; i++) {
-        console.log(arr[i]);
-    }
+interface Example {
+  _id?: string
+  title: string
+  description: string
+  code: string
+  language: string
 }
 
-// Using for...of loop
-function printArrayForOf(arr) {
-    for (let element of arr) {
-        console.log(element);
-    }
-}
-
-// Using forEach method
-function printArrayForEach(arr) {
-    arr.forEach((element, index) => {
-        console.log(\`Index \${index}: \${element}\`);
-    });
-}
-
-// Example usage
-let numbers = [10, 20, 30, 40, 50];
-printArray(numbers);`,
-          language: 'javascript'
-        },
-        {
-          title: 'Array Search Operations',
-          description: 'Linear search implementation to find elements in an array.',
-          code: `// Linear Search
-function linearSearch(arr, target) {
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === target) {
-            return i; // Return index if found
-        }
-    }
-    return -1; // Return -1 if not found
-}
-
-// Binary Search (for sorted arrays)
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-    
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-        
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-    
-    return -1;
-}
-
-// Example usage
-let numbers = [1, 3, 5, 7, 9, 11, 13];
-console.log(linearSearch(numbers, 7)); // Output: 3
-console.log(binarySearch(numbers, 7)); // Output: 3`,
-          language: 'javascript'
-        }
-      ],
-      order: 1,
-    }
+interface Topic {
+  _id: string
+  title: string
+  content: string
+  examples: Example[]
+  order: number
+  unit?: {
+    _id: string
+    title: string
+  }
+  subject?: {
+    _id: string
+    title: string
   }
 }
 
 export default function TopicPage() {
   const params = useParams()
   const { subjectId, unitId, topicId } = params
-  const [topic, setTopic] = useState(null)
+  const [topic, setTopic] = useState<Topic | null>(null)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isCompleted, setIsCompleted] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState(false)
 
   useEffect(() => {
-    // In real app, fetch from API
-    const topicInfo = topicData[unitId as string]?.[topicId as string]
-    if (topicInfo) {
-      setTopic(topicInfo)
+    const fetchTopic = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/topics/${topicId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setTopic(data)
+        } else {
+          console.error('Failed to fetch topic')
+        }
+      } catch (error) {
+        console.error('Error fetching topic:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     // Check if topic is bookmarked and completed
@@ -180,7 +81,10 @@ export default function TopicPage() {
       }
     }
 
-    checkStatus()
+    if (topicId) {
+      fetchTopic()
+      checkStatus()
+    }
   }, [subjectId, unitId, topicId])
 
   const handleBookmark = async () => {
@@ -190,7 +94,7 @@ export default function TopicPage() {
       return
     }
 
-    setLoading(true)
+    setActionLoading(true)
     try {
       const response = await fetch(`/api/topics/${topicId}/bookmark`, {
         method: 'POST',
@@ -207,7 +111,7 @@ export default function TopicPage() {
     } catch (error) {
       console.error('Error toggling bookmark:', error)
     } finally {
-      setLoading(false)
+      setActionLoading(false)
     }
   }
 
@@ -218,7 +122,7 @@ export default function TopicPage() {
       return
     }
 
-    setLoading(true)
+    setActionLoading(true)
     try {
       const response = await fetch(`/api/topics/${topicId}/complete`, {
         method: 'POST',
@@ -239,8 +143,19 @@ export default function TopicPage() {
     } catch (error) {
       console.error('Error updating completion status:', error)
     } finally {
-      setLoading(false)
+      setActionLoading(false)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading topic...</p>
+        </div>
+      </div>
+    )
   }
 
   if (!topic) {
@@ -287,7 +202,7 @@ export default function TopicPage() {
               variant="outline"
               size="sm"
               onClick={handleBookmark}
-              disabled={loading}
+              disabled={actionLoading}
             >
               {isBookmarked ? (
                 <BookmarkCheck className="h-4 w-4 mr-2" />
@@ -300,7 +215,7 @@ export default function TopicPage() {
               variant={isCompleted ? "default" : "outline"}
               size="sm"
               onClick={handleMarkComplete}
-              disabled={loading}
+              disabled={actionLoading}
             >
               {isCompleted ? (
                 <CheckCircle className="h-4 w-4 mr-2" />
@@ -325,10 +240,16 @@ export default function TopicPage() {
             <div 
               className="prose prose-lg dark:prose-invert max-w-none"
               dangerouslySetInnerHTML={{ 
-                __html: topic.content.replace(/\n/g, '<br>').replace(/#{1,6} /g, match => {
-                  const level = match.length - 1;
-                  return `<h${level} class="text-${4-level}xl font-bold mt-6 mb-4">`;
-                }).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                __html: topic.content
+                  .replace(/\n/g, '<br>')
+                  .replace(/#{6}\s+(.*)/g, '<h6 class="text-sm font-bold mt-4 mb-2">$1</h6>')
+                  .replace(/#{5}\s+(.*)/g, '<h5 class="text-base font-bold mt-4 mb-2">$1</h5>')
+                  .replace(/#{4}\s+(.*)/g, '<h4 class="text-lg font-bold mt-4 mb-3">$1</h4>')
+                  .replace(/#{3}\s+(.*)/g, '<h3 class="text-xl font-bold mt-6 mb-3">$1</h3>')
+                  .replace(/#{2}\s+(.*)/g, '<h2 class="text-2xl font-bold mt-6 mb-4">$1</h2>')
+                  .replace(/#{1}\s+(.*)/g, '<h1 class="text-3xl font-bold mt-8 mb-4">$1</h1>')
+                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
               }}
             />
           </CardContent>

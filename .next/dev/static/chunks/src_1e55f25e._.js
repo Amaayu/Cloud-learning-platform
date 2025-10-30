@@ -15,11 +15,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$them
 ;
 function ThemeProvider(t0) {
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(7);
-    if ($[0] !== "7707239140fceefc885774387c4d7ed2a1000076ebd3b5ff9f4b3649f147e50b") {
+    if ($[0] !== "3c25b76660c963d611c594d5f5f785580b827acd5b7464c65a00a4712987985f") {
         for(let $i = 0; $i < 7; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "7707239140fceefc885774387c4d7ed2a1000076ebd3b5ff9f4b3649f147e50b";
+        $[0] = "3c25b76660c963d611c594d5f5f785580b827acd5b7464c65a00a4712987985f";
     }
     let children;
     let props;

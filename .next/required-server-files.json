@@ -99,7 +99,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/Users/aayu/Desktop/Cloud-learning-platform",
+    "outputFileTracingRoot": "/Users/aayu/Desktop/online LSM/Cloud-learning-platform",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -291,11 +291,11 @@
     "configFileName": "next.config.ts",
     "reactCompiler": true,
     "turbopack": {
-      "root": "/Users/aayu/Desktop/Cloud-learning-platform"
+      "root": "/Users/aayu/Desktop/online LSM/Cloud-learning-platform"
     },
     "distDirRoot": ".next"
   },
-  "appDir": "/Users/aayu/Desktop/Cloud-learning-platform",
+  "appDir": "/Users/aayu/Desktop/online LSM/Cloud-learning-platform",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",

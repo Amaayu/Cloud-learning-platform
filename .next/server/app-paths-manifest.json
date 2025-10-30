@@ -16,7 +16,7 @@
   "/api/units/[unitId]/route": "app/api/units/[unitId]/route.js",
   "/auth/login/page": "app/auth/login/page.js",
   "/auth/signup/page": "app/auth/signup/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
   "/page": "app/page.js",
   "/profile/page": "app/profile/page.js",
   "/setup/page": "app/setup/page.js",

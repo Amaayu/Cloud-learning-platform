@@ -1,6 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import dbConnect from '@/lib/db'
 import mongoose from 'mongoose'
+
+interface SubjectData {
+  _id: mongoose.Types.ObjectId
+  title: string
+  description: string
+  image: string
+  category: string
+}
+
+interface UnitData {
+  _id: mongoose.Types.ObjectId
+  title: string
+  description: string
+  subjectId: mongoose.Types.ObjectId
+  order: number
+}
 
 export async function POST() {
   try {
@@ -12,359 +28,242 @@ export async function POST() {
     await mongoose.connection.db.collection('topics').deleteMany({})
     await mongoose.connection.db.collection('quizzes').deleteMany({})
 
-    // Complete subjects data
+    // Create subjects
     const subjects = [
       {
         title: 'Data Structures & Algorithms',
         description: 'Master fundamental data structures and algorithmic thinking with comprehensive examples and practice problems.',
         image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400',
         category: 'core',
-        units: []
       },
       {
         title: 'Database Management System',
         description: 'Learn database design, SQL queries, normalization, and database management concepts.',
         image: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400',
         category: 'core',
-        units: []
       },
       {
         title: 'Operating Systems',
         description: 'Understand OS concepts, processes, memory management, and system calls.',
         image: 'https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=400',
         category: 'core',
-        units: []
       },
-      {
-        title: 'Computer Networks',
-        description: 'Explore networking protocols, OSI model, TCP/IP, and network security.',
-        image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400',
-        category: 'core',
-        units: []
-      },
-      {
-        title: 'Web Development',
-        description: 'Build modern web applications with HTML, CSS, JavaScript, and popular frameworks.',
-        image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=400',
-        category: 'frontend',
-        units: []
-      },
-      {
-        title: 'AI & Machine Learning',
-        description: 'Introduction to artificial intelligence, machine learning algorithms, and neural networks.',
-        image: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400',
-        category: 'ai-ml',
-        units: []
-      }
     ]
 
-    // Insert subjects
-    const insertedSubjects = await mongoose.connection.db.collection('subjects').insertMany(subjects)
-    const subjectIds = Object.values(insertedSubjects.insertedIds)
+    const createdSubjects: SubjectData[] = []
+    for (const subjectData of subjects) {
+      const result = await mongoose.connection.db.collection('subjects').insertOne({
+        ...subjectData,
+        units: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      createdSubjects.push({ ...subjectData, _id: result.insertedId as mongoose.Types.ObjectId })
+    }
 
-    // Comprehensive units data for all subjects
+    // Create units
     const units = [
-      // Data Structures & Algorithms Units
       {
         title: 'Arrays and Strings',
         description: 'Fundamental linear data structures for storing and manipulating data',
-        subjectId: subjectIds[0],
-        topics: [],
-        order: 1
+        subjectId: createdSubjects[0]._id,
+        order: 1,
       },
       {
         title: 'Linked Lists',
         description: 'Dynamic data structures with pointer-based connections',
-        subjectId: subjectIds[0],
-        topics: [],
-        order: 2
+        subjectId: createdSubjects[0]._id,
+        order: 2,
       },
-      {
-        title: 'Stacks and Queues',
-        description: 'LIFO and FIFO data structures with specific access patterns',
-        subjectId: subjectIds[0],
-        topics: [],
-        order: 3
-      },
-      {
-        title: 'Trees and Binary Trees',
-        description: 'Hierarchical data structures for efficient searching and sorting',
-        subjectId: subjectIds[0],
-        topics: [],
-        order: 4
-      },
-      {
-        title: 'Graphs',
-        description: 'Network structures representing relationships between entities',
-        subjectId: subjectIds[0],
-        topics: [],
-        order: 5
-      },
-      {
-        title: 'Dynamic Programming',
-        description: 'Optimization technique for solving complex problems efficiently',
-        subjectId: subjectIds[0],
-        topics: [],
-        order: 6
-      },
-      
-      // Database Management System Units
       {
         title: 'Introduction to DBMS',
         description: 'Database concepts, architecture, and data models',
-        subjectId: subjectIds[1],
-        topics: [],
-        order: 1
+        subjectId: createdSubjects[1]._id,
+        order: 1,
       },
-      {
-        title: 'Entity-Relationship Model',
-        description: 'Conceptual database design using ER diagrams',
-        subjectId: subjectIds[1],
-        topics: [],
-        order: 2
-      },
-      {
-        title: 'Relational Model',
-        description: 'Mathematical foundation of relational databases',
-        subjectId: subjectIds[1],
-        topics: [],
-        order: 3
-      },
-      {
-        title: 'SQL Fundamentals',
-        description: 'Structured Query Language for database operations',
-        subjectId: subjectIds[1],
-        topics: [],
-        order: 4
-      },
-      {
-        title: 'Normalization',
-        description: 'Database design principles to eliminate redundancy',
-        subjectId: subjectIds[1],
-        topics: [],
-        order: 5
-      },
-      {
-        title: 'Transaction Management',
-        description: 'ACID properties and concurrency control',
-        subjectId: subjectIds[1],
-        topics: [],
-        order: 6
-      },
-      
-      // Operating Systems Units
       {
         title: 'OS Introduction',
         description: 'Operating system concepts and system architecture',
-        subjectId: subjectIds[2],
-        topics: [],
-        order: 1
+        subjectId: createdSubjects[2]._id,
+        order: 1,
       },
-      {
-        title: 'Process Management',
-        description: 'Process creation, scheduling, and synchronization',
-        subjectId: subjectIds[2],
-        topics: [],
-        order: 2
-      },
-      {
-        title: 'Memory Management',
-        description: 'Virtual memory, paging, and memory allocation',
-        subjectId: subjectIds[2],
-        topics: [],
-        order: 3
-      },
-      {
-        title: 'File Systems',
-        description: 'File organization, directory structures, and storage',
-        subjectId: subjectIds[2],
-        topics: [],
-        order: 4
-      },
-      {
-        title: 'I/O Management',
-        description: 'Device drivers, interrupt handling, and I/O scheduling',
-        subjectId: subjectIds[2],
-        topics: [],
-        order: 5
-      },
-      {
-        title: 'Security and Protection',
-        description: 'Access control, authentication, and system security',
-        subjectId: subjectIds[2],
-        topics: [],
-        order: 6
-      }
     ]
 
-    // Insert units
-    const insertedUnits = await mongoose.connection.db.collection('units').insertMany(units)
-    const unitIds = Object.values(insertedUnits.insertedIds)
+    const createdUnits: UnitData[] = []
+    for (const unitData of units) {
+      const result = await mongoose.connection.db.collection('units').insertOne({
+        ...unitData,
+        topics: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      createdUnits.push({ ...unitData, _id: result.insertedId as mongoose.Types.ObjectId })
 
-    // Add units for remaining subjects
-    const additionalUnits = [
-      // Computer Networks Units
-      {
-        title: 'Network Fundamentals',
-        description: 'Basic networking concepts and network types',
-        subjectId: subjectIds[3],
-        topics: [],
-        order: 1
-      },
-      {
-        title: 'OSI and TCP/IP Models',
-        description: 'Network protocol stack and layer architecture',
-        subjectId: subjectIds[3],
-        topics: [],
-        order: 2
-      },
-      {
-        title: 'Data Link Layer',
-        description: 'Frame transmission, error detection, and MAC protocols',
-        subjectId: subjectIds[3],
-        topics: [],
-        order: 3
-      },
-      
-      // Web Development Units
-      {
-        title: 'HTML & CSS Fundamentals',
-        description: 'Structure and styling of web pages',
-        subjectId: subjectIds[4],
-        topics: [],
-        order: 1
-      },
-      {
-        title: 'JavaScript Basics',
-        description: 'Client-side scripting and DOM manipulation',
-        subjectId: subjectIds[4],
-        topics: [],
-        order: 2
-      },
-      {
-        title: 'Frontend Frameworks',
-        description: 'React, Vue, and modern frontend development',
-        subjectId: subjectIds[4],
-        topics: [],
-        order: 3
-      },
-      
-      // AI & Machine Learning Units
-      {
-        title: 'AI Introduction',
-        description: 'Artificial intelligence concepts and applications',
-        subjectId: subjectIds[5],
-        topics: [],
-        order: 1
-      },
-      {
-        title: 'Machine Learning Basics',
-        description: 'Supervised, unsupervised, and reinforcement learning',
-        subjectId: subjectIds[5],
-        topics: [],
-        order: 2
-      },
-      {
-        title: 'Neural Networks',
-        description: 'Deep learning and artificial neural networks',
-        subjectId: subjectIds[5],
-        topics: [],
-        order: 3
-      }
-    ]
+      // Update subject with unit reference
+      await mongoose.connection.db.collection('subjects').updateOne(
+        { _id: unitData.subjectId },
+        { $push: { units: result.insertedId } } as any
+      )
+    }
 
-    // Insert additional units
-    const additionalInsertedUnits = await mongoose.connection.db.collection('units').insertMany(additionalUnits)
-    const additionalUnitIds = Object.values(additionalInsertedUnits.insertedIds)
-    
-    // Combine all unit IDs
-    const allUnitIds = [...unitIds, ...additionalUnitIds]
-
-    // Update subjects with unit references
-    await mongoose.connection.db.collection('subjects').updateOne(
-      { _id: subjectIds[0] },
-      { $set: { units: [unitIds[0], unitIds[1], unitIds[2], unitIds[3], unitIds[4], unitIds[5]] } }
-    )
-    await mongoose.connection.db.collection('subjects').updateOne(
-      { _id: subjectIds[1] },
-      { $set: { units: [unitIds[6], unitIds[7], unitIds[8], unitIds[9], unitIds[10], unitIds[11]] } }
-    )
-    await mongoose.connection.db.collection('subjects').updateOne(
-      { _id: subjectIds[2] },
-      { $set: { units: [unitIds[12], unitIds[13], unitIds[14], unitIds[15], unitIds[16], unitIds[17]] } }
-    )
-    await mongoose.connection.db.collection('subjects').updateOne(
-      { _id: subjectIds[3] },
-      { $set: { units: [additionalUnitIds[0], additionalUnitIds[1], additionalUnitIds[2]] } }
-    )
-    await mongoose.connection.db.collection('subjects').updateOne(
-      { _id: subjectIds[4] },
-      { $set: { units: [additionalUnitIds[3], additionalUnitIds[4], additionalUnitIds[5]] } }
-    )
-    await mongoose.connection.db.collection('subjects').updateOne(
-      { _id: subjectIds[5] },
-      { $set: { units: [additionalUnitIds[6], additionalUnitIds[7], additionalUnitIds[8]] } }
-    )
-
-    // Comprehensive topics for multiple units
+    // Create topics
     const topics = [
-      // DSA Topics
       {
         title: 'Array Fundamentals',
-        content: `<h1>Array Fundamentals</h1>
-        <p>Arrays are fundamental data structures that store elements of the same type in contiguous memory locations.</p>
-        <h2>Key Characteristics</h2>
-        <ul>
-          <li><strong>Contiguous Memory Layout</strong>: Elements are stored in consecutive memory addresses</li>
-          <li><strong>Fixed Size</strong>: Size is determined at declaration time</li>
-          <li><strong>Homogeneous Elements</strong>: All elements must be of the same data type</li>
-          <li><strong>Zero-based Indexing</strong>: First element is at index 0</li>
-        </ul>
-        <h2>Time Complexity</h2>
-        <ul>
-          <li><strong>Access</strong>: O(1) - Direct access using index</li>
-          <li><strong>Search</strong>: O(n) - Linear search through elements</li>
-          <li><strong>Insertion</strong>: O(n) - May require shifting elements</li>
-          <li><strong>Deletion</strong>: O(n) - May require shifting elements</li>
-        </ul>`,
+        content: `# Array Fundamentals
+
+## What is an Array?
+
+An array is a fundamental data structure that stores elements of the same type in contiguous memory locations. Arrays provide efficient random access to elements using indices and are the building blocks for more complex data structures.
+
+## Key Characteristics
+
+### 1. **Contiguous Memory Layout**
+- Elements are stored in consecutive memory addresses
+- Enables efficient cache utilization
+- Allows for pointer arithmetic
+
+### 2. **Fixed Size**
+- Size is determined at declaration time
+- Cannot be changed during runtime (in static arrays)
+- Memory is allocated in a single block
+
+### 3. **Homogeneous Elements**
+- All elements must be of the same data type
+- Ensures consistent memory usage per element
+- Enables type safety
+
+### 4. **Zero-based Indexing**
+- First element is at index 0
+- Last element is at index (size - 1)
+- Standard in most programming languages
+
+## Time Complexity Analysis
+
+| Operation | Time Complexity | Description |
+|-----------|----------------|-------------|
+| Access | O(1) | Direct access using index |
+| Search | O(n) | Linear search through elements |
+| Insertion | O(n) | May require shifting elements |
+| Deletion | O(n) | May require shifting elements |
+
+## Advantages
+
+1. **Fast Access**: O(1) random access to any element
+2. **Memory Efficient**: No extra memory overhead
+3. **Cache Friendly**: Contiguous memory improves cache performance
+4. **Simple Implementation**: Easy to understand and implement
+
+## Disadvantages
+
+1. **Fixed Size**: Cannot resize dynamically
+2. **Insertion/Deletion Cost**: O(n) for maintaining order
+3. **Memory Waste**: May allocate more memory than needed
+4. **Type Restriction**: Can only store homogeneous data`,
+        unitId: createdUnits[0]._id,
+        subjectId: createdUnits[0].subjectId,
+        order: 1,
         examples: [
           {
             title: 'Array Declaration and Initialization',
-            description: 'Different ways to declare and initialize arrays',
-            code: `// JavaScript
+            description: 'Different ways to create and initialize arrays in various programming languages',
+            code: `// JavaScript - Dynamic Arrays
 let numbers = [1, 2, 3, 4, 5];
 let fruits = new Array("apple", "banana", "orange");
+let empty = new Array(5); // Creates array with 5 undefined elements
 
-// Java
+// Java - Static Arrays
 int[] numbers = {1, 2, 3, 4, 5};
 String[] fruits = new String[3];
+fruits[0] = "apple";
+fruits[1] = "banana";
+fruits[2] = "orange";
 
-// Python
+// Python - Lists (Dynamic Arrays)
 numbers = [1, 2, 3, 4, 5]
-fruits = ["apple", "banana", "orange"]`,
+fruits = ["apple", "banana", "orange"]
+mixed = [1, "hello", 3.14, True]  # Python allows mixed types`,
+            language: 'javascript'
+          },
+          {
+            title: 'Array Access and Modification',
+            description: 'How to access and modify array elements using indices',
+            code: `// Accessing elements
+let arr = [10, 20, 30, 40, 50];
+
+console.log(arr[0]);    // Output: 10 (first element)
+console.log(arr[2]);    // Output: 30 (third element)
+console.log(arr[4]);    // Output: 50 (last element)
+
+// Modifying elements
+arr[1] = 25;           // Change second element
+arr[arr.length - 1] = 55; // Change last element
+
+console.log(arr);      // Output: [10, 25, 30, 40, 55]
+
+// Safe access with bounds checking
+function safeAccess(array, index) {
+    if (index >= 0 && index < array.length) {
+        return array[index];
+    }
+    return null; // or throw an error
+}
+
+console.log(safeAccess(arr, 2));  // Output: 30
+console.log(safeAccess(arr, 10)); // Output: null`,
             language: 'javascript'
           }
-        ],
-        unitId: unitIds[0],
-        subjectId: subjectIds[0],
-        order: 1
+        ]
       },
       {
         title: 'Array Operations and Algorithms',
-        content: `<h1>Array Operations and Algorithms</h1>
-        <p>Learn essential array operations including traversal, searching, insertion, and deletion.</p>
-        <h2>Common Operations</h2>
-        <ul>
-          <li><strong>Traversal</strong>: Visiting each element exactly once</li>
-          <li><strong>Insertion</strong>: Adding elements at specific positions</li>
-          <li><strong>Deletion</strong>: Removing elements from specific positions</li>
-          <li><strong>Searching</strong>: Finding elements or their positions</li>
-        </ul>`,
+        content: `# Array Operations and Algorithms
+
+## Basic Array Operations
+
+### 1. Traversal
+Visiting each element of the array exactly once. This is the foundation for most array algorithms.
+
+### 2. Insertion
+Adding elements to the array at specific positions. May require shifting existing elements.
+
+### 3. Deletion
+Removing elements from specific positions. May require shifting remaining elements.
+
+### 4. Searching
+Finding elements or their positions within the array.
+
+### 5. Sorting
+Arranging elements in a specific order (ascending or descending).
+
+## Common Array Algorithms
+
+### Linear Search
+- **Time Complexity**: O(n)
+- **Space Complexity**: O(1)
+- **Use Case**: Unsorted arrays, small datasets
+
+### Binary Search
+- **Time Complexity**: O(log n)
+- **Space Complexity**: O(1)
+- **Prerequisite**: Array must be sorted
+- **Use Case**: Large sorted datasets
+
+## Array Manipulation Patterns
+
+1. **Prefix Sum**: Precompute cumulative sums for range queries
+2. **Kadane's Algorithm**: Maximum subarray sum
+3. **Dutch National Flag**: Three-way partitioning
+4. **Merge Technique**: Combining sorted arrays`,
+        unitId: createdUnits[0]._id,
+        subjectId: createdUnits[0].subjectId,
+        order: 2,
         examples: [
           {
             title: 'Linear Search Implementation',
             description: 'Basic search algorithm for arrays',
-            code: `function linearSearch(arr, target) {
+            code: `// Linear Search - O(n) time complexity
+function linearSearch(arr, target) {
     for (let i = 0; i < arr.length; i++) {
         if (arr[i] === target) {
             return i; // Return index if found
@@ -375,257 +274,299 @@ fruits = ["apple", "banana", "orange"]`,
 
 // Example usage
 let numbers = [64, 34, 25, 12, 22, 11, 90];
-console.log(linearSearch(numbers, 22)); // Output: 4`,
+console.log(linearSearch(numbers, 22)); // Output: 4
+console.log(linearSearch(numbers, 99)); // Output: -1`,
+            language: 'javascript'
+          },
+          {
+            title: 'Binary Search Implementation',
+            description: 'Efficient search algorithm for sorted arrays',
+            code: `// Binary Search - O(log n) time complexity
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+        
+        if (arr[mid] === target) {
+            return mid; // Found target
+        } else if (arr[mid] < target) {
+            left = mid + 1; // Search right half
+        } else {
+            right = mid - 1; // Search left half
+        }
+    }
+    
+    return -1; // Target not found
+}
+
+// Example usage
+let sortedNumbers = [11, 12, 22, 25, 34, 64, 90];
+console.log(binarySearch(sortedNumbers, 22)); // Output: 2
+console.log(binarySearch(sortedNumbers, 99)); // Output: -1`,
             language: 'javascript'
           }
-        ],
-        unitId: unitIds[0],
-        subjectId: subjectIds[0],
-        order: 2
+        ]
       },
-      
-      // Linked List Topics
+      {
+        title: 'String Fundamentals',
+        content: `# String Fundamentals
+
+## What is a String?
+
+A string is a sequence of characters that represents textual data. In most programming languages, strings are implemented as arrays of characters, making them a special case of array data structures.
+
+## String Characteristics
+
+### 1. **Character Sequence**
+- Ordered collection of characters
+- Each character has a specific position (index)
+- Can contain letters, digits, symbols, and whitespace
+
+### 2. **Immutability (Language Dependent)**
+- **Immutable**: Java, Python, JavaScript (primitive strings)
+- **Mutable**: C++, C# (StringBuilder), Python (bytearray)
+
+### 3. **Encoding**
+- ASCII: 7-bit encoding (128 characters)
+- UTF-8: Variable-length encoding (supports Unicode)
+- UTF-16: 16-bit encoding (used by Java, JavaScript)
+
+## String Operations
+
+### Basic Operations
+1. **Length**: Get number of characters
+2. **Access**: Get character at specific index
+3. **Concatenation**: Join two or more strings
+4. **Substring**: Extract part of a string
+5. **Search**: Find character or substring
+6. **Comparison**: Compare strings lexicographically
+
+## String Algorithms
+
+### 1. **Pattern Matching**
+- **Naive Algorithm**: O(nm) time complexity
+- **KMP Algorithm**: O(n+m) time complexity
+- **Rabin-Karp**: O(n+m) average case
+
+### 2. **String Manipulation**
+- **Palindrome Check**: O(n) time
+- **Anagram Detection**: O(n log n) or O(n)
+- **Longest Common Subsequence**: O(nm)`,
+        unitId: createdUnits[0]._id,
+        subjectId: createdUnits[0].subjectId,
+        order: 3,
+        examples: [
+          {
+            title: 'String Creation and Basic Operations',
+            description: 'Different ways to create strings and perform basic operations',
+            code: `// String Creation
+let str1 = "Hello World";           // String literal
+let str2 = new String("Hello");     // String object
+let str3 = \`Template \${str1}\`;      // Template literal (ES6)
+
+// Basic Properties
+console.log("Length:", str1.length);        // Output: 11
+console.log("Character at index 0:", str1[0]); // Output: H
+console.log("Character at index 6:", str1.charAt(6)); // Output: W
+
+// String Concatenation
+let firstName = "John";
+let lastName = "Doe";
+let fullName1 = firstName + " " + lastName;     // Using + operator
+let fullName2 = firstName.concat(" ", lastName); // Using concat method
+let fullName3 = \`\${firstName} \${lastName}\`;    // Using template literals
+
+console.log("Full names:", fullName1, fullName2, fullName3);`,
+            language: 'javascript'
+          }
+        ]
+      },
       {
         title: 'Linked List Fundamentals',
-        content: `<h1>Linked List Fundamentals</h1>
-        <p>A linked list is a linear data structure where elements are stored in nodes, and each node contains data and a reference to the next node.</p>
-        <h2>Advantages</h2>
-        <ul>
-          <li><strong>Dynamic Size</strong>: Can grow or shrink during runtime</li>
-          <li><strong>Efficient Insertion/Deletion</strong>: O(1) at known positions</li>
-          <li><strong>Memory Efficient</strong>: Allocates memory as needed</li>
-        </ul>`,
+        content: `# Linked List Fundamentals
+
+## What is a Linked List?
+
+A linked list is a linear data structure where elements (nodes) are stored in sequence, but unlike arrays, the elements are not stored in contiguous memory locations. Instead, each node contains data and a reference (or link) to the next node in the sequence.
+
+## Node Structure
+
+Each node in a linked list typically contains:
+1. **Data**: The actual value stored in the node
+2. **Next**: A reference/pointer to the next node
+
+## Types of Linked Lists
+
+### 1. **Singly Linked List**
+- Each node points to the next node
+- Last node points to null
+- Traversal only in forward direction
+
+### 2. **Doubly Linked List**
+- Each node has pointers to both next and previous nodes
+- Allows bidirectional traversal
+- Requires more memory per node
+
+### 3. **Circular Linked List**
+- Last node points back to the first node
+- Forms a circular chain
+- No null pointers (except for empty list)
+
+## Advantages of Linked Lists
+
+1. **Dynamic Size**: Can grow or shrink during runtime
+2. **Efficient Insertion/Deletion**: O(1) at known positions
+3. **Memory Efficient**: Allocates memory as needed
+4. **Flexible**: Easy to implement stacks, queues, and other structures
+
+## Time Complexity Analysis
+
+| Operation | Time Complexity | Description |
+|-----------|----------------|-------------|
+| Access | O(n) | Must traverse from head |
+| Search | O(n) | Linear search required |
+| Insertion | O(1) | At known position |
+| Deletion | O(1) | At known position |`,
+        unitId: createdUnits[1]._id,
+        subjectId: createdUnits[1].subjectId,
+        order: 1,
         examples: [
           {
             title: 'Singly Linked List Implementation',
-            description: 'Basic linked list structure and operations',
-            code: `class ListNode {
+            description: 'Complete implementation of a singly linked list with basic operations',
+            code: `// Node class definition
+class ListNode {
     constructor(data) {
         this.data = data;
         this.next = null;
     }
 }
 
-class LinkedList {
+// Singly Linked List class
+class SinglyLinkedList {
     constructor() {
         this.head = null;
         this.size = 0;
     }
     
+    // Insert at the beginning - O(1)
     insertAtBeginning(data) {
         const newNode = new ListNode(data);
         newNode.next = this.head;
         this.head = newNode;
         this.size++;
     }
-}`,
+    
+    // Insert at the end - O(n)
+    insertAtEnd(data) {
+        const newNode = new ListNode(data);
+        
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        this.size++;
+    }
+    
+    // Display the list
+    display() {
+        if (!this.head) {
+            console.log("List is empty");
+            return;
+        }
+        
+        let result = [];
+        let current = this.head;
+        
+        while (current) {
+            result.push(current.data);
+            current = current.next;
+        }
+        
+        console.log(result.join(" -> ") + " -> null");
+    }
+}
+
+// Example usage
+const list = new SinglyLinkedList();
+list.insertAtBeginning(10);
+list.insertAtBeginning(20);
+list.insertAtEnd(30);
+list.display(); // Output: 20 -> 10 -> 30 -> null`,
             language: 'javascript'
           }
-        ],
-        unitId: unitIds[1],
-        subjectId: subjectIds[0],
-        order: 1
-      },
-      
-      // DBMS Topics
-      {
-        title: 'Database Concepts and Architecture',
-        content: `<h1>Database Concepts and Architecture</h1>
-        <p>A database is an organized collection of structured information, or data, typically stored electronically in a computer system.</p>
-        <h2>Key Database Concepts</h2>
-        <ul>
-          <li><strong>Data</strong>: Raw facts and figures</li>
-          <li><strong>Database</strong>: Collection of related data</li>
-          <li><strong>DBMS</strong>: Software system that enables users to define, create, maintain, and control access to databases</li>
-        </ul>
-        <h2>Three-Level Architecture</h2>
-        <ul>
-          <li><strong>External Level</strong>: User view of the database</li>
-          <li><strong>Conceptual Level</strong>: Community view of the database</li>
-          <li><strong>Internal Level</strong>: Physical storage of data</li>
-        </ul>`,
-        examples: [
-          {
-            title: 'Basic SQL Query',
-            description: 'Simple SELECT statement',
-            code: `-- Select all columns from users table
-SELECT * FROM users;
-
--- Select specific columns with condition
-SELECT name, email FROM users WHERE age > 18;
-
--- Select with ordering
-SELECT * FROM users ORDER BY name ASC;`,
-            language: 'sql'
-          }
-        ],
-        unitId: unitIds[6],
-        subjectId: subjectIds[1],
-        order: 1
-      },
-      
-      // OS Topics
-      {
-        title: 'Operating System Fundamentals',
-        content: `<h1>Operating System Fundamentals</h1>
-        <p>An Operating System (OS) is system software that manages computer hardware and software resources and provides common services for computer programs.</p>
-        <h2>Functions of Operating System</h2>
-        <ul>
-          <li><strong>Process Management</strong>: Process creation, scheduling, and synchronization</li>
-          <li><strong>Memory Management</strong>: Memory allocation and virtual memory</li>
-          <li><strong>File System Management</strong>: File operations and storage</li>
-          <li><strong>I/O System Management</strong>: Device driver management</li>
-        </ul>`,
-        examples: [
-          {
-            title: 'System Call Example',
-            description: 'Basic system calls in C',
-            code: `#include <stdio.h>
-#include <unistd.h>
-#include <sys/wait.h>
-
-int main() {
-    pid_t pid = fork();
-    
-    if (pid == 0) {
-        // Child process
-        printf("Child process: PID = %d\\n", getpid());
-        exit(0);
-    } else if (pid > 0) {
-        // Parent process
-        printf("Parent process: PID = %d\\n", getpid());
-        wait(NULL);
-    }
-    
-    return 0;
-}`,
-            language: 'c'
-          }
-        ],
-        unitId: unitIds[12],
-        subjectId: subjectIds[2],
-        order: 1
+        ]
       }
     ]
 
-    // Insert topics
-    const insertedTopics = await mongoose.connection.db.collection('topics').insertMany(topics)
-    const topicIds = Object.values(insertedTopics.insertedIds)
+    const createdTopics: any[] = []
+    for (const topicData of topics) {
+      const result = await mongoose.connection.db.collection('topics').insertOne({
+        ...topicData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      createdTopics.push({ ...topicData, _id: result.insertedId })
 
-    // Update units with topic references
-    await mongoose.connection.db.collection('units').updateOne(
-      { _id: unitIds[0] },
-      { $set: { topics: [topicIds[0], topicIds[1]] } }
-    )
-    await mongoose.connection.db.collection('units').updateOne(
-      { _id: unitIds[1] },
-      { $set: { topics: [topicIds[2]] } }
-    )
-    await mongoose.connection.db.collection('units').updateOne(
-      { _id: unitIds[6] },
-      { $set: { topics: [topicIds[3]] } }
-    )
-    await mongoose.connection.db.collection('units').updateOne(
-      { _id: unitIds[12] },
-      { $set: { topics: [topicIds[4]] } }
-    )
-
-    // Multiple quizzes for different units
-    const quizzes = [
-      {
-        title: 'Arrays and Strings Quiz',
-        unitId: unitIds[0],
-        subjectId: subjectIds[0],
-        questions: [
-          {
-            question: 'What is the time complexity of accessing an element in an array by index?',
-            options: ['O(1)', 'O(n)', 'O(log n)', 'O(n²)'],
-            correctAnswer: 0,
-            explanation: 'Array elements can be accessed directly using their index, which takes constant time O(1).'
-          },
-          {
-            question: 'Which of the following is NOT a characteristic of arrays?',
-            options: [
-              'Elements are stored in contiguous memory locations',
-              'All elements must be of the same data type',
-              'Dynamic size that can change during runtime',
-              'Zero-based indexing in most programming languages'
-            ],
-            correctAnswer: 2,
-            explanation: 'Arrays typically have a fixed size that is determined at creation time.'
-          },
-          {
-            question: 'What is the worst-case time complexity for searching an element in an unsorted array?',
-            options: ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)'],
-            correctAnswer: 2,
-            explanation: 'In the worst case, we might need to check every element in the array, resulting in O(n) time complexity.'
-          }
-        ],
-        timeLimit: 20
-      },
-      {
-        title: 'Linked Lists Quiz',
-        unitId: unitIds[1],
-        subjectId: subjectIds[0],
-        questions: [
-          {
-            question: 'What is the main advantage of linked lists over arrays?',
-            options: ['Faster access time', 'Dynamic size', 'Better cache performance', 'Less memory usage'],
-            correctAnswer: 1,
-            explanation: 'Linked lists can grow or shrink during runtime, unlike arrays which have fixed size.'
-          },
-          {
-            question: 'What is the time complexity of inserting an element at the beginning of a linked list?',
-            options: ['O(1)', 'O(n)', 'O(log n)', 'O(n²)'],
-            correctAnswer: 0,
-            explanation: 'Inserting at the beginning only requires updating the head pointer, which is O(1).'
-          }
-        ],
-        timeLimit: 15
-      },
-      {
-        title: 'Database Fundamentals Quiz',
-        unitId: unitIds[6],
-        subjectId: subjectIds[1],
-        questions: [
-          {
-            question: 'What does DBMS stand for?',
-            options: ['Database Management System', 'Data Base Management Software', 'Database Manipulation System', 'Data Management System'],
-            correctAnswer: 0,
-            explanation: 'DBMS stands for Database Management System.'
-          },
-          {
-            question: 'Which level of database architecture describes how data is physically stored?',
-            options: ['External Level', 'Conceptual Level', 'Internal Level', 'Logical Level'],
-            correctAnswer: 2,
-            explanation: 'The Internal Level describes the physical storage of data.'
-          }
-        ],
-        timeLimit: 15
-      }
-    ]
-
-    await mongoose.connection.db.collection('quizzes').insertMany(quizzes)
-
-    // Get final counts
-    const finalCounts = {
-      subjects: await mongoose.connection.db.collection('subjects').countDocuments(),
-      units: await mongoose.connection.db.collection('units').countDocuments(),
-      topics: await mongoose.connection.db.collection('topics').countDocuments(),
-      quizzes: await mongoose.connection.db.collection('quizzes').countDocuments()
+      // Update unit with topic reference
+      await mongoose.connection.db.collection('units').updateOne(
+        { _id: topicData.unitId },
+        { $push: { topics: result.insertedId } } as any
+      )
     }
+
+    // Create a sample quiz
+    const quiz = {
+      title: 'Arrays and Strings Quiz',
+      unitId: createdUnits[0]._id,
+      subjectId: createdUnits[0].subjectId,
+      timeLimit: 20,
+      questions: [
+        {
+          question: 'What is the time complexity of accessing an element in an array by index?',
+          options: ['O(1)', 'O(n)', 'O(log n)', 'O(n²)'],
+          correctAnswer: 0,
+          explanation: 'Array elements can be accessed directly using their index, which takes constant time O(1).'
+        },
+        {
+          question: 'Which of the following is NOT a characteristic of arrays?',
+          options: [
+            'Elements are stored in contiguous memory locations',
+            'All elements must be of the same data type',
+            'Dynamic size that can change during runtime',
+            'Zero-based indexing in most programming languages'
+          ],
+          correctAnswer: 2,
+          explanation: 'Arrays typically have a fixed size that is determined at creation time. Dynamic arrays or lists can change size, but traditional arrays cannot.'
+        }
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+
+    await mongoose.connection.db.collection('quizzes').insertOne(quiz)
 
     return NextResponse.json({
       message: 'Database seeded successfully!',
-      counts: finalCounts,
-      subjectIds: subjectIds.map(id => id.toString()),
-      unitIds: unitIds.map(id => id.toString())
+      summary: {
+        subjects: createdSubjects.length,
+        units: createdUnits.length,
+        topics: createdTopics.length,
+        quizzes: 1
+      }
     })
 
   } catch (error) {
-    console.error('Seeding error:', error)
+    console.error('Error seeding database:', error)
     return NextResponse.json(
-      { message: 'Seeding failed', error: error.message },
+      { message: 'Error seeding database', error: error.message },
       { status: 500 }
     )
   }
