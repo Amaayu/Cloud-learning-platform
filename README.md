@@ -227,18 +227,12 @@ cse-learning-platform/
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+This application can be deployed on any Node.js hosting platform that supports:
+- Node.js 20.9.0 or higher
+- MongoDB connection
+- Environment variables
 
-1. Push code to GitHub repository
-2. Connect repository to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy automatically on push
-
-### Other Platforms
-
-- **Netlify**: Configure build settings and environment variables
-- **Railway**: Connect MongoDB and set environment variables
-- **Heroku**: Add MongoDB addon and configure environment
+Configure the required environment variables and deploy using your preferred platform.
 
 ## 🤝 Contributing
 
